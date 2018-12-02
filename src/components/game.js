@@ -6,16 +6,18 @@ import HotColdImage from './hot-cold-image';
 import cold from './cold.jpg';
 import hot from './hot.jpg';
 
+import {connect} from 'react-redux';
+import {setGuess} from '../actions';
 
-export default class Game extends React.Component {
+export class Game extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {
-			prevGuess: ' ',
-			currGuess: ' ',
-			answer: Math.floor(Math.random()*101+1),
-			guessedCorrect: false,
-		}
+		// this.state = {
+		// 	prevGuess: ' ',
+		// 	currGuess: ' ',
+		// 	answer: Math.floor(Math.random()*101+1),
+		// 	guessedCorrect: false,
+		// }
 	}
 
 	setGuess(event) {
@@ -23,27 +25,25 @@ export default class Game extends React.Component {
 		if(event.key === 'Enter') {
 			let guess = event.target.value;
 			console.log(guess);
-			this.setState({prevGuess: this.state.currGuess, currGuess: guess});
-			if(guess==this.state.answer){
-				this.setState({guessedCorrect: true})
-			}
+			this.props.dispatch(setGuess(guess));
 		}
 	}
 
 
 
 	render() {
-		console.log(this.state);
-		if(this.state.guessedCorrect) {
-			console.log(this.state.currGuess==this.state.answer);
+		console.log(this.props.guessedCorrect);
+		console.log(this.props.answer);
+		if(this.props.guessedCorrect) {
+			console.log(this.props.currGuess==this.props.answer);
 			return(
 				<div>
 					<h1>Hot or Cold?</h1>
-					<h2>You win! {this.state.currGuess} is the number.</h2>
+					<h2>You win! {this.props.currGuess} is the number.</h2>
 				</div>	
 			);	
 		}
-		else if(this.state.prevGuess===' ') {
+		else if(this.props.prevGuess===' ') {
 			return(
 				<div>
 					<h1>Hot or Cold?</h1>
@@ -52,7 +52,7 @@ export default class Game extends React.Component {
 				</div>
 			)			
 		}
-		else if(Math.abs(this.state.currGuess-this.state.answer)>Math.abs(this.state.prevGuess-this.state.answer)) {
+		else if(Math.abs(this.props.currGuess-this.props.answer)>Math.abs(this.props.prevGuess-this.props.answer)) {
 			return(
 				<div>
 					<h1>Hot or Cold?</h1>
@@ -62,7 +62,7 @@ export default class Game extends React.Component {
 				</div>
 			);
 		}
-		else if(Math.abs(this.state.currGuess-this.state.answer)<Math.abs(this.state.prevGuess-this.state.answer)) {
+		else if(Math.abs(this.props.currGuess-this.props.answer)<Math.abs(this.props.prevGuess-this.props.answer)) {
 			return(
 				<div>
 					<h1>Hot or Cold?</h1>
@@ -78,6 +78,15 @@ export default class Game extends React.Component {
 					
 			)
 		}
-
 	}
 }
+
+const mapStateToProps = (state) => ({
+	currGuess: state.currGuess,
+	prevGuess: state.prevGuess,
+	answer: state.answer,
+	guessedCorrect: state.guessedCorrect,
+});
+
+export default connect(mapStateToProps)(Game);
+

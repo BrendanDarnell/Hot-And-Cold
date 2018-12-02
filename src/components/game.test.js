@@ -20,7 +20,7 @@ describe('<Game/>', () => {
 			guessedCorrect: false
 		}
 		instance.setState(initState);
-		
+		console.log(JSON.stringify(wrapper));
 		wrapper.find('input#guess-input').simulate('keypress', {key: 'Enter', target: {value: 40}});
 		console.log(wrapper.state('currGuess'));
 		expect(wrapper.state('currGuess')).toEqual(40);
